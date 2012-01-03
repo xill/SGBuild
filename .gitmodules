@@ -1,0 +1,3 @@
+[submodule "src/SSCon"]
+	path = src/SSCon
+	url = git@github.com:xill/SSCon.git
