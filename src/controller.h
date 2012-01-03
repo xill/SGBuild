@@ -3,11 +3,11 @@
 
 #include <string>
 #include <list>
-#include <textbuilder/text_include.h>
+#include <SSCon/text_include.h>
 
 #include "graphics/mainrenderer.h"
-#include "terminal/terminallistener.h"
-#include "terminal/terminal.h"
+#include "SSCon/terminallistener.h"
+#include "SSCon/terminal.h"
 #include "math/vec2.h"
 
 class MainRenderer;

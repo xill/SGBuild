@@ -2,7 +2,7 @@
 
 #include "math/vec2.h"
 #include "math/vec3.h"
-#include "textbuilder/textfactory.h"
+#include "SSCon/textfactory.h"
 #include <iostream>
 
 Controller *Controller::instance_ = NULL;
@@ -29,7 +29,7 @@ void Controller::run()
 	renderer.initWindow(Vec2f(720,560),32,0,title_);
 	renderer.initGraphics();
 	terminal.setListener(this);
-	terminal.setDimension(Vec2f(720,560));
+	terminal.setDimension(720,560);
 
 	while (running) {
 
