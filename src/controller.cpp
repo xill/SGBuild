@@ -30,6 +30,7 @@ void Controller::run()
 	renderer.initGraphics();
 	terminal.setListener(this);
 	terminal.setDimension(720,560);
+	terminal.setBackgroundRGBA(0,0,0,1);
 
 	while (running) {
 
@@ -52,6 +53,7 @@ void Controller::run()
 		renderer.startDraw();
 		TextFactory::instance()->drawText("ekekekekekekasadfsfaffrghhjfbcvbsds",100,100);
 		renderer.drawFrame();
+		view.draw();
 		terminal.draw();
 		renderer.commitDraw();
 	}
@@ -88,11 +90,112 @@ void Controller::onEvent(const SDL_Event &event)
 	};
 }
 
+#include "animation_frame.h"
+
 std::string Controller::onCommit(std::string line) {
-	if(line == "exit") {
+	std::vector<std::string> commands = TextFactory::instance()->util()->split(line,' ');
+	if(commands[0] == "exit") {
 		terminal.close();
-	} else {
-		return "invalid command";
+	} else if(commands[0] == "add") {
+		return add(commands);
+	} else if(commands[0] == "list") {
+		return list(commands);
+	} else if(commands[0] == "set") {
+		return set(commands);
 	}
+	
+	return "invalid command";
+}
+
+std::string Controller::add(std::vector<std::string> commands)
+{
+	if(commands.size() == 3) {
+		int err = 0;
+
+		Vec2f loc;
+		try {
+			loc.x = f_scast(commands[1]);
+		} catch ( ... ) {
+			err += 1;
+		}
+
+		try {
+			loc.y = f_scast(commands[2]);
+		} catch ( ... ) {
+			err += 2;
+		}
+
+		if(err != 0) 
+			return (err==3)
+				?"invalid add parameters"
+				:(err==2)?"invalid second add parameters"
+				:"invalid first add parameters";
+
+		AnimationFrame* img = new AnimationFrame();
+		img->setLocation(loc);
+		img->setScale(Vec2f(100,100));
+		view.add(img);
+		view.sort();
+
+		return "";
+	} else if(commands.size() == 2 && commands[1] == "-help") {
+		return "usage: add <x-value> <y-value>";
+	} else if(commands.size() == 1) {
+		terminal.push("too few parameters.");
+		return "use \"add -help\" for usage.";
+	} else if(commands.size() > 3) {
+		return "too many parameters.";
+	} else {
+		return "invalid add parameters";
+	}
+}
+
+std::string Controller::set(std::vector<std::string> commands) 
+{
+	if(commands.size() == 3) {
+		if(commands[2] == "-active") {
+			int tmp = 0;
+			try {
+				tmp = i_scast(commands[1]);
+			} catch ( ... ) {
+				return "invalid parameters.";
+			}
+
+			try {
+				view.set(tmp);
+			} catch ( ... ) {
+				return "no such element key.";
+			}
+
+			return "active element set to "+commands[1];
+		}
+	} else if(commands.size() == 2 && commands[1] == "-help") {
+			terminal.push("Usage: set <target_key> <action>");
+			terminal.push(" ");
+			terminal.push("Actions:");
+			terminal.push("-active");
+			return "";
+	} else if(commands.size() == 1 || commands.size() == 2) {
+		terminal.push("too few parameters.");
+		return "use \"set -help\" for usage.";
+	} else if(commands.size() > 3) {
+		return "too many parameters.";
+	}
+	
+	return "invalid parameters.";
+}
+
+std::string Controller::list(std::vector<std::string> commands)
+{
+	return "";
+}
+
+std::string Controller::load(std::vector<std::string> commands)
+{
+	return "";
+}
+
+std::string Controller::save(std::vector<std::string> commands)
+{
 	return "";
 }

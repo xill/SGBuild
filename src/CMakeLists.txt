@@ -38,6 +38,10 @@ add_subdirectory(SSCon)
 
 set(GENERAL_Headers
 	controller.h
+	view.h
+	element.h
+	animation_frame.h
+	stringutil.h
 	math/math.h
 	math/vec2.h
 	math/vec3.h
@@ -47,6 +51,9 @@ set(GENERAL_Sources
 	${GENERAL_Headers}
 	controller.cpp
 	main.cpp
+	view.cpp
+	element.cpp
+	animation_frame.cpp
 )
 
 add_executable(SGBuild ${GENERAL_Sources})

@@ -8,7 +8,9 @@
 #include "graphics/mainrenderer.h"
 #include "SSCon/terminallistener.h"
 #include "SSCon/terminal.h"
+#include "view.h"
 #include "math/vec2.h"
+#include "stringutil.h"
 
 class MainRenderer;
 class CelestialBody;
@@ -30,6 +32,7 @@ protected:
 
 	MainRenderer renderer;
 	Terminal terminal;
+	View view;
 	bool running;
 
 public:
@@ -38,6 +41,13 @@ public:
 	void onEvent(const SDL_Event &event);
 	std::string onCommit(std::string);
 	void run();
+
+private:
+	std::string add(std::vector<std::string> commands);
+	std::string set(std::vector<std::string> commands);
+	std::string list(std::vector<std::string> commands);
+	std::string load(std::vector<std::string> commands);
+	std::string save(std::vector<std::string> commands);
 };
 
 #endif // CONTROLLER_H
