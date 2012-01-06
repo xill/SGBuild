@@ -91,6 +91,7 @@ void Controller::onEvent(const SDL_Event &event)
 }
 
 #include "animation_frame.h"
+#include "animation.h"
 
 std::string Controller::onCommit(std::string line) {
 	std::vector<std::string> commands = TextFactory::instance()->util()->split(line,' ');
@@ -109,50 +110,77 @@ std::string Controller::onCommit(std::string line) {
 
 std::string Controller::add(std::vector<std::string> commands)
 {
-	if(commands.size() == 3) {
-		int err = 0;
-
-		Vec2f loc;
-		try {
-			loc.x = f_scast(commands[1]);
-		} catch ( ... ) {
-			err += 1;
-		}
-
-		try {
-			loc.y = f_scast(commands[2]);
-		} catch ( ... ) {
-			err += 2;
-		}
-
-		if(err != 0) 
-			return (err==3)
-				?"invalid add parameters"
-				:(err==2)?"invalid second add parameters"
-				:"invalid first add parameters";
-
-		AnimationFrame* img = new AnimationFrame();
-		img->setLocation(loc);
-		img->setScale(Vec2f(100,100));
-		view.add(img);
-		view.sort();
-
-		return "";
-	} else if(commands.size() == 2 && commands[1] == "-help") {
-		return "usage: add <x-value> <y-value>";
-	} else if(commands.size() == 1) {
+	switch(commands.size()) {
+	case 1:
+	{
 		terminal.push("too few parameters.");
 		return "use \"add -help\" for usage.";
-	} else if(commands.size() > 3) {
-		return "too many parameters.";
-	} else {
-		return "invalid add parameters";
 	}
+	case 2:
+	{
+		if(commands[1] == "-help") {
+			terminal.push("usage: add <element type> <target>");
+			terminal.push(" ");
+			terminal.push("element types:");
+			terminal.push("-image            < single image. doesn't require a target. >");
+			terminal.push("-animation        < animation wrapper. doesn't require a target. >");
+			terminal.push("-animationframe   < animation element. requires a animation wrapper target key >");
+			return "";
+		} else if(commands[1] == "-image") {
+
+		} else if(commands[1] == "-animation") {
+			Animation* anim = new Animation(data.transform,data.scaling);
+			view.add(anim);
+		}
+		break;
+	}
+	case 3:
+	{
+		if(commands[1] == "-animationframe") {
+			int key = 0;
+
+			/* if last parameter is actually a number. */
+			try {
+				key = i_scast(commands[2]);
+			} catch ( ... ) {
+				return "invalid parameters.";
+			}
+
+			Element* elem;
+			/* if element key is a valid animation element. */
+			try {
+				elem = view.get(key);
+			} catch ( ... ) {
+				return "element key is not valid.";
+			}
+
+			if(elem->type() == "animation") {
+				AnimationFrame* frame = new AnimationFrame(Vec2f(0,0),Vec2f(1,1));
+				((Animation*)elem)->add(frame);
+				return "";
+			} else {
+				return "element is not valid.";
+			}
+		}
+	}
+	default:
+		terminal.push("too many parameters.");
+		return "use \"add -help\" for usage.";
+	};
+
+	return "invalid parameters.";
 }
 
 std::string Controller::set(std::vector<std::string> commands) 
 {
-	if(commands.size() == 3) {
+	if (commands.size() >= 4) {
+		if(commands[1] == "-translate") {
+			// TODO. active element translate.
+		} else if(commands[1] == "-scale") {
+			// TODO. active element scaling.
+		}
+
+	} else if(commands.size() == 3) {
 		if(commands[2] == "-active") {
 			int tmp = 0;
 			try {
@@ -170,10 +198,16 @@ std::string Controller::set(std::vector<std::string> commands)
 			return "active element set to "+commands[1];
 		}
 	} else if(commands.size() == 2 && commands[1] == "-help") {
-			terminal.push("Usage: set <target_key> <action>");
+			terminal.push("usage: set <target key> <action>");
 			terminal.push(" ");
-			terminal.push("Actions:");
-			terminal.push("-active");
+			terminal.push("actions:");
+			terminal.push("-active        < sets target key as the active element. >");
+			terminal.push("or");
+			terminal.push("usage: set <modification target> <value 1> <value 2> etc.");
+			terminal.push(" ");
+			terminal.push("modification targets:");
+			terminal.push("-translate");
+			terminal.push("-scale");
 			return "";
 	} else if(commands.size() == 1 || commands.size() == 2) {
 		terminal.push("too few parameters.");
@@ -187,6 +221,28 @@ std::string Controller::set(std::vector<std::string> commands)
 
 std::string Controller::list(std::vector<std::string> commands)
 {
+	if(commands.size() == 2) {
+		if(commands[1] == "-help") {
+			terminal.push("usage: list <action>");
+			terminal.push(" ");
+			terminal.push("actions:");
+			terminal.push("-all        < list all >");
+		} else if(commands[1] == "-all") {
+			std::vector<Element*> elements = view.getAll();
+			if(elements.size() > 0) {
+				for(int i = 0; i < elements.size(); ++i) {
+					terminal.push(s_cast(i)+" "+elements[i]->type());
+					// TODO. animation sub element listing.
+				}
+			} else {
+				return "nothing to list.";
+			}
+		}
+		// TODO. add type specific checks when their done.
+	} else if(commands.size() == 1) {
+		terminal.push("too few parameters.");
+		return "use \"list -help\" for usage.";
+	}
 	return "";
 }
 

@@ -48,6 +48,12 @@ private:
 	std::string list(std::vector<std::string> commands);
 	std::string load(std::vector<std::string> commands);
 	std::string save(std::vector<std::string> commands);
+
+	struct datawrapper
+	{
+		Vec2f scaling = Vec2f(10,10);
+		Vec2f transform;
+	} data;
 };
 
 #endif // CONTROLLER_H

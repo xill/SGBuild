@@ -7,12 +7,13 @@
 #define LOWER_LEFT 3
 
 #include "math/vec2.h"
+#include <string>
 
 class Element {
 	
 public :
-	Element();
-	Element(Vec2f loc, Vec2f _scale);
+	Element(std::string _typename);
+	Element(Vec2f loc, Vec2f _scale, std::string _typename);
 
 	virtual void draw() {};
 	virtual void update() {};
@@ -28,6 +29,8 @@ public :
 
 	Vec2f* dimensionPoints() { return points; }
 
+	std::string type() { return m_typename; }
+
 	bool hasChanged()
 	{
 		if(changed){
@@ -37,6 +40,9 @@ public :
 			return false;
 		}
 	}
+
+	/* sets RGBA values when drawing this object. */
+	void setRGBA(float r, float g, float b, float a);
 
 protected:
 	Vec2f location;
@@ -48,6 +54,10 @@ protected:
 	bool visible;
 	bool changed;
 	int layer;
+
+	float R,G,B,A;
+
+	const std::string m_typename;
 };
 
 #endif

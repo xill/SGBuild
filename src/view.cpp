@@ -21,8 +21,22 @@ void View::sort()
 
 void View::set(int index)
 {
-	if(index < viewlist.size()) {
+	if(isValidKey(index)) {
 		current = viewlist[index];
+	} else {
+		throw int();
+	}
+}
+
+bool View::isValidKey(int key) 
+{
+	return (key < viewlist.size() && viewlist[key] != 0);
+}
+
+Element* View::get(int index)
+{
+	if(isValidKey(index)) {
+		return viewlist[index];
 	} else {
 		throw int();
 	}

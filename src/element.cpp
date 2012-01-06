@@ -1,9 +1,14 @@
 #include "element.h"
 
-Element::Element()
+Element::Element(std::string _typename)
 	: visible(true)
 	, changed(false)
 	, layer(0)
+	, m_typename(_typename)
+	, R(1)
+	, G(1)
+	, B(1)
+	, A(1)
 {
 	points = new Vec2f[4];
 	points[TOP_LEFT] = Vec2f(0,0);
@@ -12,16 +17,28 @@ Element::Element()
 	points[LOWER_LEFT] = Vec2f(0,1);
 }
 
-Element::Element(Vec2f loc, Vec2f _scale)
+Element::Element(Vec2f loc, Vec2f _scale, std::string _typename)
 	: visible(true)
 	, changed(false)
 	, layer(0)
 	, location(loc)
 	, scale(_scale)
+	, m_typename(_typename)
+	, R(1)
+	, G(1)
+	, B(1)
+	, A(1)
 {
 	points = new Vec2f[4];
 	points[TOP_LEFT] = Vec2f(0,0);
 	points[TOP_RIGHT] = Vec2f(1,0);
 	points[LOWER_RIGHT] = Vec2f(1,1);
 	points[LOWER_LEFT] = Vec2f(0,1);
+}
+
+void Element::setRGBA(float r, float g, float b, float a) {
+	this->R = r;
+	this->G = g;
+	this->B = b;
+	this->A = a;
 }

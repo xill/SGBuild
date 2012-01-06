@@ -7,8 +7,8 @@
 class AnimationFrame : public Element {
 
 public:
-	AnimationFrame(int dur = 0) : Element() , frame_duration(dur) {}
-	AnimationFrame(Vec2f loc, Vec2f scale,int dur = 0) : Element(loc,scale) , frame_duration(dur) {}
+	AnimationFrame(int dur = 0) : Element("animationframe") , frame_duration(dur) {}
+	AnimationFrame(Vec2f loc, Vec2f scale,int dur = 0) : Element(loc,scale,"animationframe") , frame_duration(dur) {}
 
 	void draw();
 	void update();
