@@ -23,6 +23,9 @@ public:
 	/* set current active element. */
 	void set(int index);
 
+	/* set current active element. */
+	void set(Element* elem);
+
 	/* is given key valid. */
 	bool isValidKey(int key);
 

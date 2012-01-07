@@ -53,7 +53,7 @@ static float f_scast(const std::string& s) {
 	return tmp;
 }
 
-static float i_scast(const std::string& s) {
+static int i_scast(const std::string& s) {
 	int tmp = i_cast(s);
 	if(s != s_cast(tmp)) {
 		throw int();

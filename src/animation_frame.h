@@ -14,6 +14,7 @@ public:
 	void update();
 
 	int getDuration() { return frame_duration; }
+	void setDuration(int dur) { frame_duration = dur; }
 private:
 	int frame_duration;
 };

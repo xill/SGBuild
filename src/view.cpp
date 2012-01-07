@@ -28,6 +28,11 @@ void View::set(int index)
 	}
 }
 
+void View::set(Element* elem)
+{
+	current = elem;
+}
+
 bool View::isValidKey(int key) 
 {
 	return (key < viewlist.size() && viewlist[key] != 0);

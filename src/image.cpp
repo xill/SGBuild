@@ -1,8 +1,8 @@
-#include "animation_frame.h"
+#include "image.h"
 
-void AnimationFrame::draw()
+void Image::draw()
 {
-	if(visible){
+	if(visible) {
 		glPushMatrix();
 		glTranslatef(location.x,location.y,0);
 		glScalef(scale.x,scale.y,1);
@@ -19,22 +19,7 @@ void AnimationFrame::draw()
 	}
 }
 
-void AnimationFrame::update()
+void Image::update()
 {
 
 }
-/*
-AnimationFrame* AnimationFrame::get(int index) 
-{
-	if(isValidKey(index)){
-		return frames[index];
-	} else {
-		throw int();
-	}
-}
-
-bool AnimationFrame::isValidKey(int key)
-{
-	return (key < frames.size() && frames[key] != 0);
-}
-*/

@@ -16,7 +16,8 @@ void Animation::draw()
 		if(tmptime > 100) tmptime = 100;
 
 		duration += tmptime;
-		while(duration >= frames[frameindex]->getDuration())
+		while(duration >= frames[frameindex]->getDuration() 
+			&& frames[frameindex]->getDuration() > 0)
 		{
 			duration -= frames[frameindex]->getDuration();
 			frameindex++;
@@ -41,6 +42,20 @@ void Animation::setIndex(int i)
 	} else {
 		throw int();
 	}
+}
+
+AnimationFrame* Animation::get(int index) 
+{
+	if(isValidKey(index)){
+		return frames[index];
+	} else {
+		throw int();
+	}
+}
+
+bool Animation::isValidKey(int key)
+{
+	return (key < frames.size() && frames[key] != 0);
 }
 
 void Animation::restart() 

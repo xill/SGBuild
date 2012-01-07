@@ -51,8 +51,12 @@ private:
 
 	struct datawrapper
 	{
-		Vec2f scaling = Vec2f(10,10);
+		Vec2f scaling;
 		Vec2f transform;
+
+		datawrapper() : scaling(Vec2f(1,1)) , transform(Vec2f(0,0)) {
+
+		}
 	} data;
 };
 

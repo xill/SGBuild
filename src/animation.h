@@ -39,6 +39,10 @@ public:
 	void setRunning(bool state) { running = state; }
 	void setLooping(bool state) { looping = state; }
 	void add(AnimationFrame* elem) { frames.push_back(elem); }
+	std::vector<AnimationFrame*> get() { return frames; }
+	AnimationFrame* get(int index);
+
+	bool isValidKey(int key);
 
 private:
 	int frameindex;

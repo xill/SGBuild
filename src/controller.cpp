@@ -92,6 +92,7 @@ void Controller::onEvent(const SDL_Event &event)
 
 #include "animation_frame.h"
 #include "animation.h"
+#include "image.h"
 
 std::string Controller::onCommit(std::string line) {
 	std::vector<std::string> commands = TextFactory::instance()->util()->split(line,' ');
@@ -127,10 +128,12 @@ std::string Controller::add(std::vector<std::string> commands)
 			terminal.push("-animationframe   < animation element. requires a animation wrapper target key >");
 			return "";
 		} else if(commands[1] == "-image") {
-
+			view.add(new Image(Vec2f(data.transform),Vec2f(data.scaling)));
+			return "new image added.";
 		} else if(commands[1] == "-animation") {
-			Animation* anim = new Animation(data.transform,data.scaling);
+			Animation* anim = new Animation(Vec2f(data.transform),Vec2f(data.scaling));
 			view.add(anim);
+			return "empty animation wrapper added.";
 		}
 		break;
 	}
@@ -154,7 +157,7 @@ std::string Controller::add(std::vector<std::string> commands)
 				return "element key is not valid.";
 			}
 
-			if(elem->type() == "animation") {
+			if(elem->type() == "animationcontainer") {
 				AnimationFrame* frame = new AnimationFrame(Vec2f(0,0),Vec2f(1,1));
 				((Animation*)elem)->add(frame);
 				return "";
@@ -173,32 +176,83 @@ std::string Controller::add(std::vector<std::string> commands)
 
 std::string Controller::set(std::vector<std::string> commands) 
 {
-	if (commands.size() >= 4) {
+	if (commands.size() == 4 && commands[1] != "-active") {
 		if(commands[1] == "-translate") {
-			// TODO. active element translate.
-		} else if(commands[1] == "-scale") {
-			// TODO. active element scaling.
-		}
+			Element* elem = view.getSet();
+			if(elem == 0) {
+				return "set element is invalid.";
+			}
+			float x = 0,y = 0;
 
-	} else if(commands.size() == 3) {
-		if(commands[2] == "-active") {
-			int tmp = 0;
+			/* cast and check for parameter validity. */
 			try {
-				tmp = i_scast(commands[1]);
+				x = f_scast(commands[2]);
+				y = f_scast(commands[3]);
 			} catch ( ... ) {
 				return "invalid parameters.";
 			}
 
+			elem->setLocation(Vec2f(x,y));
+
+			return "";
+		} else if(commands[1] == "-scale") {
+			Element* elem = view.getSet();
+			if(elem == 0) {
+				return "set element is invalid.";
+			}
+			float x = 0,y = 0;
+
+			/* cast and check for parameter validity. */
 			try {
-				view.set(tmp);
+				x = f_scast(commands[2]);
+				y = f_scast(commands[3]);
 			} catch ( ... ) {
-				return "no such element key.";
+				return "invalid parameters.";
 			}
 
-			return "active element set to "+commands[1];
+			elem->setScale(Vec2f(x,y));
+
+			return "";
+		}
+
+	} else if(commands.size() == 3 && commands[1] != "-active") {
+		if(view.getSet() != 0) {
+			if(view.getSet()->type() == "animationcontainer") {
+				Animation* anim = (Animation*) view.getSet();
+				bool state = false;
+
+				if (commands[2] == "true") {
+					state = true;
+				} else if (commands[2] == "false") {
+					state = false;
+				} else {
+					return "try parameters true or false.";
+				}
+
+				if (commands[1] == "-loop") {
+					anim->setLooping(state);
+					return "looping set true";
+				} else if (commands[1] == "-run") {
+					anim->setRunning(state);
+					return "run set true";
+				}
+			} else if (view.getSet()->type() == "animationframe") {
+				if(commands[1] == "-duration") {
+					int dur = 0;
+					try {
+						dur = i_scast(commands[2]);
+					} catch ( ... ) {
+						return "invalid parameters.";
+					}
+					((AnimationFrame*) view.getSet())->setDuration(dur);
+					return "";
+				}
+			}
+		} else {
+			return "current set type is invalid.";
 		}
 	} else if(commands.size() == 2 && commands[1] == "-help") {
-			terminal.push("usage: set <target key> <action>");
+			terminal.push("usage: set <action> <target key 1> <target key 2> etc.");
 			terminal.push(" ");
 			terminal.push("actions:");
 			terminal.push("-active        < sets target key as the active element. >");
@@ -208,11 +262,41 @@ std::string Controller::set(std::vector<std::string> commands)
 			terminal.push("modification targets:");
 			terminal.push("-translate");
 			terminal.push("-scale");
+			terminal.push("-run");
+			terminal.push("-loop");
 			return "";
 	} else if(commands.size() == 1 || commands.size() == 2) {
 		terminal.push("too few parameters.");
 		return "use \"set -help\" for usage.";
-	} else if(commands.size() > 3) {
+	} else if(commands.size() > 2) {
+		if(commands[1] == "-active") {
+			int index = 2;
+			Element* elem = 0;
+			try {
+				elem = view.get(i_scast(commands[index]));
+				while(++index < commands.size()) {
+					std::string s = elem->type();
+					if(s == "animationcontainer") { 
+						elem = ((Animation*)elem)->get(i_scast(commands[index])); 
+					} else if (s == "animationframe") {
+						//elem = ((AnimationFrame*)elem)->get(i_scast(commands[index])); 
+						return ""; // currently no sub elements within subelements.
+					} else if (s == "image") {
+						return "no subelements within images.";
+					}
+				}
+			} catch ( ... ) {
+				return "invalid parameters.";
+			}
+			
+			if(elem == 0) {
+				return "no valid element set.";
+			}
+
+			view.set(elem);
+			return "active element set";
+		}
+
 		return "too many parameters.";
 	}
 	

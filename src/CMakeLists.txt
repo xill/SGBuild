@@ -41,6 +41,8 @@ set(GENERAL_Headers
 	view.h
 	element.h
 	animation_frame.h
+	animation.h
+	image.h
 	stringutil.h
 	math/math.h
 	math/vec2.h
@@ -54,6 +56,8 @@ set(GENERAL_Sources
 	view.cpp
 	element.cpp
 	animation_frame.cpp
+	animation.cpp
+	image.cpp
 )
 
 add_executable(SGBuild ${GENERAL_Sources})
