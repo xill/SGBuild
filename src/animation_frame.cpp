@@ -16,6 +16,10 @@ void AnimationFrame::draw()
 		glEnd();
 		glColor4f(1,1,1,1);
 		glPopMatrix();
+
+		for(int i = 0 ; i < frames.size() ; ++i) {
+			frames[i]->draw();
+		}
 	}
 }
 
@@ -23,7 +27,7 @@ void AnimationFrame::update()
 {
 
 }
-/*
+
 AnimationFrame* AnimationFrame::get(int index) 
 {
 	if(isValidKey(index)){
@@ -37,4 +41,3 @@ bool AnimationFrame::isValidKey(int key)
 {
 	return (key < frames.size() && frames[key] != 0);
 }
-*/

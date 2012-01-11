@@ -12,11 +12,14 @@
 #include "math/vec2.h"
 #include "stringutil.h"
 
-class MainRenderer;
-class CelestialBody;
-class MaiWorld;
-class MaiBody;
-class SoundPool;
+#include "animation_frame.h"
+#include "animation.h"
+#include "image.h"
+
+#define ANIMATION "animationcontainer"
+#define ANIMATIONFRAME "animationframe"
+#define IMAGE "image"
+
 union SDL_Event;
 struct Object;
 
@@ -48,6 +51,8 @@ private:
 	std::string list(std::vector<std::string> commands);
 	std::string load(std::vector<std::string> commands);
 	std::string save(std::vector<std::string> commands);
+
+	void listRecursion(AnimationFrame* frame , std::string app_str);
 
 	struct datawrapper
 	{

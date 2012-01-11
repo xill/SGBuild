@@ -1,6 +1,8 @@
 #ifndef ANIMATION_FRAME_H
 #define ANIMATION_FRAME_H
 
+#include <vector>
+
 #include "element.h"
 #include "SSCon/text_include.h"
 
@@ -15,8 +17,18 @@ public:
 
 	int getDuration() { return frame_duration; }
 	void setDuration(int dur) { frame_duration = dur; }
+
+	void add(AnimationFrame* elem) { frames.push_back(elem); }
+	std::vector<AnimationFrame*> get() { return frames; }
+	AnimationFrame* get(int index);
+
+	bool isValidKey(int key);
+
 private:
+	std::vector<AnimationFrame*> frames;
+
 	int frame_duration;
+
 };
 
 #endif

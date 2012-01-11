@@ -90,10 +90,6 @@ void Controller::onEvent(const SDL_Event &event)
 	};
 }
 
-#include "animation_frame.h"
-#include "animation.h"
-#include "image.h"
-
 std::string Controller::onCommit(std::string line) {
 	std::vector<std::string> commands = TextFactory::instance()->util()->split(line,' ');
 	if(commands[0] == "exit") {
@@ -111,13 +107,12 @@ std::string Controller::onCommit(std::string line) {
 
 std::string Controller::add(std::vector<std::string> commands)
 {
-	switch(commands.size()) {
-	case 1:
+	if (commands.size() < 2)
 	{
 		terminal.push("too few parameters.");
 		return "use \"add -help\" for usage.";
 	}
-	case 2:
+	else if(commands.size() == 2)
 	{
 		if(commands[1] == "-help") {
 			terminal.push("usage: add <element type> <target>");
@@ -135,9 +130,8 @@ std::string Controller::add(std::vector<std::string> commands)
 			view.add(anim);
 			return "empty animation wrapper added.";
 		}
-		break;
 	}
-	case 3:
+	else if (commands.size() > 2)
 	{
 		if(commands[1] == "-animationframe") {
 			int key = 0;
@@ -153,23 +147,40 @@ std::string Controller::add(std::vector<std::string> commands)
 			/* if element key is a valid animation element. */
 			try {
 				elem = view.get(key);
+			
+				if(commands.size() > 3) {
+					for(int i = 3 ; i < commands.size() ; ++i) {
+						if (elem->type() == ANIMATION) {
+							elem = ((Animation*)elem)->get(i_scast(commands[i]));
+						} else if (elem->type() == ANIMATIONFRAME) {
+							elem = ((AnimationFrame*)elem)->get(i_scast(commands[i]));
+						} else if (elem->type() == IMAGE) {
+							return "invalid element type \"image\" encountered. add canceled.";
+						}
+					}
+				}
+
 			} catch ( ... ) {
 				return "element key is not valid.";
 			}
 
-			if(elem->type() == "animationcontainer") {
+			if(elem->type() == ANIMATION) {
 				AnimationFrame* frame = new AnimationFrame(Vec2f(0,0),Vec2f(1,1));
 				((Animation*)elem)->add(frame);
+				return "";
+			} else if (elem->type() == ANIMATIONFRAME) {
+				AnimationFrame* frame = new AnimationFrame(Vec2f(0,0),Vec2f(1,1));
+				((AnimationFrame*)elem)->add(frame);
 				return "";
 			} else {
 				return "element is not valid.";
 			}
 		}
 	}
-	default:
+	else {
 		terminal.push("too many parameters.");
 		return "use \"add -help\" for usage.";
-	};
+	}
 
 	return "invalid parameters.";
 }
@@ -217,7 +228,7 @@ std::string Controller::set(std::vector<std::string> commands)
 
 	} else if(commands.size() == 3 && commands[1] != "-active") {
 		if(view.getSet() != 0) {
-			if(view.getSet()->type() == "animationcontainer") {
+			if(view.getSet()->type() == ANIMATION) {
 				Animation* anim = (Animation*) view.getSet();
 				bool state = false;
 
@@ -236,7 +247,7 @@ std::string Controller::set(std::vector<std::string> commands)
 					anim->setRunning(state);
 					return "run set true";
 				}
-			} else if (view.getSet()->type() == "animationframe") {
+			} else if (view.getSet()->type() == ANIMATIONFRAME) {
 				if(commands[1] == "-duration") {
 					int dur = 0;
 					try {
@@ -264,6 +275,7 @@ std::string Controller::set(std::vector<std::string> commands)
 			terminal.push("-scale");
 			terminal.push("-run");
 			terminal.push("-loop");
+			terminal.push("-duration");
 			return "";
 	} else if(commands.size() == 1 || commands.size() == 2) {
 		terminal.push("too few parameters.");
@@ -276,12 +288,11 @@ std::string Controller::set(std::vector<std::string> commands)
 				elem = view.get(i_scast(commands[index]));
 				while(++index < commands.size()) {
 					std::string s = elem->type();
-					if(s == "animationcontainer") { 
+					if(s == ANIMATION) { 
 						elem = ((Animation*)elem)->get(i_scast(commands[index])); 
-					} else if (s == "animationframe") {
-						//elem = ((AnimationFrame*)elem)->get(i_scast(commands[index])); 
-						return ""; // currently no sub elements within subelements.
-					} else if (s == "image") {
+					} else if (s == ANIMATIONFRAME) {
+						elem = ((AnimationFrame*)elem)->get(i_scast(commands[index])); 
+					} else if (s == IMAGE) {
 						return "no subelements within images.";
 					}
 				}
@@ -315,8 +326,18 @@ std::string Controller::list(std::vector<std::string> commands)
 			std::vector<Element*> elements = view.getAll();
 			if(elements.size() > 0) {
 				for(int i = 0; i < elements.size(); ++i) {
-					terminal.push(s_cast(i)+" "+elements[i]->type());
-					// TODO. animation sub element listing.
+					Element* elem = elements[i];
+					terminal.push(s_cast(i)+" "+elem->type());
+					
+					if(elem->type() == ANIMATION) {
+						/* fully iterates all aimationframe childs within this animationcontainer. */
+						std::vector<AnimationFrame*> list = ((Animation*)elem)->get();
+						for(int f = 0; f < list.size(); ++f) {
+							AnimationFrame* elem = list[f];
+							terminal.push(s_cast(i)+" "+s_cast(f)+" "+elem->type());
+							listRecursion(elem,s_cast(i)+" "+s_cast(f));
+						}
+					}
 				}
 			} else {
 				return "nothing to list.";
@@ -338,4 +359,16 @@ std::string Controller::load(std::vector<std::string> commands)
 std::string Controller::save(std::vector<std::string> commands)
 {
 	return "";
+}
+
+void Controller::listRecursion(AnimationFrame* frame , std::string app_str) 
+{
+	std::vector<AnimationFrame*> list = frame->get();
+	if(list.size() > 0) {
+		for(int i = 0; i < list.size() ; ++i) {
+			AnimationFrame* subframe = list[i];
+			terminal.push(app_str + " " + s_cast(i) + " " + subframe->type());
+			if(subframe != 0) listRecursion(subframe, app_str + " " + s_cast(i));
+		}
+	}
 }
