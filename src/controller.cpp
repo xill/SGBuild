@@ -100,6 +100,8 @@ std::string Controller::onCommit(std::string line) {
 		return list(commands);
 	} else if(commands[0] == "set") {
 		return set(commands);
+	} else if(commands[0] == "load") {
+		return load(commands);
 	}
 	
 	return "invalid command";
@@ -324,7 +326,9 @@ std::string Controller::list(std::vector<std::string> commands)
 			terminal.push("-all        < list all >");
 		} else if(commands[1] == "-all") {
 			std::vector<Element*> elements = view.getAll();
+			std::vector<std::string> mapped = TextureManager::instance()->getMapped();
 			if(elements.size() > 0) {
+				terminal.push("--- elements ---");
 				for(int i = 0; i < elements.size(); ++i) {
 					Element* elem = elements[i];
 					terminal.push(s_cast(i)+" "+elem->type());
@@ -339,6 +343,13 @@ std::string Controller::list(std::vector<std::string> commands)
 						}
 					}
 				}
+				terminal.push("-----------");
+			} if (mapped.size() > 0) {
+				terminal.push("--- mapped textures ---");
+				for(int i = 0; i < mapped.size(); ++i) {
+					terminal.push(s_cast(i)+" "+((TextureManager::instance()->isValidTexture(i))?"loaded ":"")+mapped[i]);
+				}
+				terminal.push("-----------");
 			} else {
 				return "nothing to list.";
 			}
@@ -353,7 +364,47 @@ std::string Controller::list(std::vector<std::string> commands)
 
 std::string Controller::load(std::vector<std::string> commands)
 {
-	return "";
+	if(commands.size() == 2) {
+		if(commands[1] == "-help") {
+			terminal.push("usage: load <action> <target>");
+			terminal.push(" ");
+			terminal.push("actions:");
+			terminal.push("-map        < maps the target. this mapped target can used to load textures. >");
+			terminal.push("-texture    < loads a mapped texture. >");
+			return "add rgb as 3rd target when loading textures without alpha. rgba is default if not defined.";
+		} else {
+			terminal.push("invalid parameters.");
+			return "use \"load -help\" for usage.";
+		}
+	} else if (commands.size() >= 3) {
+		if(commands[1] == "-map") {
+			TextureManager::instance()->mapTexture(commands[2]);
+			return "new path mapped.";
+		} else if(commands[1] == "-texture") {
+			int i = 0;
+			try {
+				i = i_scast(commands[2]);
+			} catch ( ... ) {
+				return "invalid target parameter.";
+			}
+
+			if(TextureManager::instance()->isValidMap(i)) {
+				int colorvalue = GL_RGBA;
+				if(commands.size() >= 4) {
+					if(commands[3] == "RGB" || commands[3] == "rgba") colorvalue = GL_RGB;
+				}
+				try {
+					TextureManager::instance()->loadTexture(i,GL_CLAMP_TO_EDGE,GL_CLAMP_TO_EDGE,colorvalue);
+				} catch ( ... ) {
+					return "error loading texture.";
+				}
+				return "";
+			} else {
+				return "no such mapped key exists.";
+			}
+		}
+	}
+	return "invalid parameters.";
 }
 
 std::string Controller::save(std::vector<std::string> commands)

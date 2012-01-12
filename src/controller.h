@@ -6,6 +6,7 @@
 #include <SSCon/text_include.h>
 
 #include "graphics/mainrenderer.h"
+#include "graphics/texturemanager.h"
 #include "SSCon/terminallistener.h"
 #include "SSCon/terminal.h"
 #include "view.h"
