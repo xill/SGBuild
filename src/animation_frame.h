@@ -5,6 +5,7 @@
 
 #include "element.h"
 #include "SSCon/text_include.h"
+#include "graphics/texturemanager.h"
 
 class AnimationFrame : public Element {
 

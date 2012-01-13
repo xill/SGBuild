@@ -8,6 +8,7 @@
 
 #include "math/vec2.h"
 #include <string>
+#include "SSCon/text_include.h"
 
 class Element {
 	
@@ -30,6 +31,9 @@ public :
 	Vec2f* dimensionPoints() { return points; }
 
 	std::string type() { return m_typename; }
+
+	void setTexture(GLuint tex) { texture = tex; }
+	GLuint getTexture() { return texture; }
 
 	bool hasChanged()
 	{
@@ -58,6 +62,8 @@ protected:
 	float R,G,B,A;
 
 	const std::string m_typename;
+
+	GLuint texture;
 };
 
 #endif

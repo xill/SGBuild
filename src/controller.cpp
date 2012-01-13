@@ -248,6 +248,8 @@ std::string Controller::set(std::vector<std::string> commands)
 				} else if (commands[1] == "-run") {
 					anim->setRunning(state);
 					return "run set true";
+				} else if (commands[1] == "-texture") {
+					return "texture cannot be set for type animation";
 				}
 			} else if (view.getSet()->type() == ANIMATIONFRAME) {
 				if(commands[1] == "-duration") {
@@ -259,6 +261,34 @@ std::string Controller::set(std::vector<std::string> commands)
 					}
 					((AnimationFrame*) view.getSet())->setDuration(dur);
 					return "";
+				} else if(commands[1] == "-texture") {
+					int index = 0;
+					try {
+						index = i_scast(commands[2]);
+					} catch ( ... ) {
+						return "invalid parameters.";
+					}
+					if(TextureManager::instance()->isValidTexture(index)) {
+						((AnimationFrame*) view.getSet())->setTexture(TextureManager::instance()->getTexture(index));
+						return "";
+					} else {
+						return "no such texture";
+					}
+				}
+			} else if (view.getSet()->type() == IMAGE) {
+				if(commands[1] == "-texture") {
+					int index = 0;
+					try {
+						index = i_scast(commands[2]);
+					} catch ( ... ) {
+						return "invalid parameters.";
+					}
+					if(TextureManager::instance()->isValidTexture(index)) {
+						((Image*) view.getSet())->setTexture(TextureManager::instance()->getTexture(index));
+						return "";
+					} else {
+						return "no such texture";
+					}
 				}
 			}
 		} else {
@@ -278,6 +308,7 @@ std::string Controller::set(std::vector<std::string> commands)
 			terminal.push("-run");
 			terminal.push("-loop");
 			terminal.push("-duration");
+			terminal.push("-texture");
 			return "";
 	} else if(commands.size() == 1 || commands.size() == 2) {
 		terminal.push("too few parameters.");
@@ -309,8 +340,6 @@ std::string Controller::set(std::vector<std::string> commands)
 			view.set(elem);
 			return "active element set";
 		}
-
-		return "too many parameters.";
 	}
 	
 	return "invalid parameters.";
