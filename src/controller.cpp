@@ -102,6 +102,8 @@ std::string Controller::onCommit(std::string line) {
 		return set(commands);
 	} else if(commands[0] == "load") {
 		return load(commands);
+	} else if(commands[0] == "save") {
+		return save(commands);
 	}
 	
 	return "invalid command";
@@ -438,7 +440,17 @@ std::string Controller::load(std::vector<std::string> commands)
 
 std::string Controller::save(std::vector<std::string> commands)
 {
-	return "";
+	if(commands.size() == 3) {
+		if(commands[1] == "-all") {
+			SLManager::instance()->save(&view,commands[2]);
+			return "all data saved.";
+		} else {
+			return "invalid parameters";
+		}
+	} else if(commands.size() == 2 && commands[1] == "-help") {
+
+	}
+	return "invalid parameters.";
 }
 
 void Controller::listRecursion(AnimationFrame* frame , std::string app_str) 

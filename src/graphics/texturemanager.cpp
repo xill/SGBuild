@@ -76,3 +76,14 @@ bool TextureManager::isValidMap(int i) {
 bool TextureManager::isValidTexture(int i) {
 	return (textures[i] > 0);
 }
+
+std::string TextureManager::idToPath(int id) {
+	int index = -1;
+	for(int i = 0; i < textures.size(); ++i) {
+		if(textures[i] == id) {
+			index = i;
+			break;
+		}
+	}
+	return (isValidMap(index))?texture_map[index]:"none";
+}

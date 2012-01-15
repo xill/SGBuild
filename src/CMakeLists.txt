@@ -44,6 +44,7 @@ set(GENERAL_Headers
 	animation.h
 	image.h
 	stringutil.h
+	saveandloadmanager.h
 	math/math.h
 	math/vec2.h
 	math/vec3.h
@@ -55,6 +56,7 @@ set(GENERAL_Sources
 	main.cpp
 	view.cpp
 	element.cpp
+	saveandloadmanager.cpp
 	animation_frame.cpp
 	animation.cpp
 	image.cpp

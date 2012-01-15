@@ -12,6 +12,7 @@
 #include "view.h"
 #include "math/vec2.h"
 #include "stringutil.h"
+#include "saveandloadmanager.h"
 
 #include "animation_frame.h"
 #include "animation.h"
