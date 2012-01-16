@@ -1,16 +1,23 @@
 #ifndef SL_MANAGER_H
 #define SL_MANAGER_H
 
+#define ANIMATION "animationcontainer"
+#define ANIMATIONFRAME "animationframe"
+#define IMAGE "image"
+
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <istream>
 
+#include "math/vec2.h"
 #include "view.h"
 #include "animation.h"
 #include "animation_frame.h"
 #include "image.h"
 #include "element.h"
 #include "graphics/texturemanager.h"
+#include "SSCon/textfactory.h"
 #include "stringutil.h"
 
 class SLManager {
@@ -35,6 +42,7 @@ private:
 
 	static SLManager* m_instance;
 
+	Element* loadHelper(std::ifstream &myfile, Element* elem, std::string newline = "");
 	void saveHelper(std::ofstream &filestream, Element* elem);
 };
 

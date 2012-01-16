@@ -20,20 +20,23 @@ public :
 	virtual void update() {};
 
 	bool isVisible() { return visible; }
-	void setVisible(bool state) { visible = state; }
+	void setVisible(const bool state) { visible = state; }
 
 	Vec2f getLocation() { return location; }
-	void setLocation(Vec2f loc) { this->location = loc; }
+	void setLocation(const Vec2f loc) { this->location = loc; }
 
 	Vec2f getScale() { return scale; }
-	void setScale(Vec2f _scale) { this->scale = _scale; }
+	void setScale(const Vec2f _scale) { this->scale = _scale; }
 
 	Vec2f* dimensionPoints() { return points; }
 
 	std::string type() { return m_typename; }
 
-	void setTexture(GLuint tex) { texture = tex; }
+	void setTexture(const GLuint tex) { texture = tex; }
 	GLuint getTexture() { return texture; }
+
+	void setName(const std::string name) { m_pathname = name; }
+	std::string getName() { return m_pathname; }
 
 	bool hasChanged()
 	{
@@ -62,6 +65,7 @@ protected:
 	float R,G,B,A;
 
 	const std::string m_typename;
+	std::string m_pathname;
 
 	GLuint texture;
 };

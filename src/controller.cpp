@@ -407,6 +407,9 @@ std::string Controller::load(std::vector<std::string> commands)
 			terminal.push("invalid parameters.");
 			return "use \"load -help\" for usage.";
 		}
+	} else if (commands.size() == 3 && commands[1] == "-file") {
+		SLManager::instance()->load(&view,commands[2]);
+		return "save file loaded.";
 	} else if (commands.size() >= 3) {
 		if(commands[1] == "-map") {
 			TextureManager::instance()->mapTexture(commands[2]);
@@ -422,7 +425,7 @@ std::string Controller::load(std::vector<std::string> commands)
 			if(TextureManager::instance()->isValidMap(i)) {
 				int colorvalue = GL_RGBA;
 				if(commands.size() >= 4) {
-					if(commands[3] == "RGB" || commands[3] == "rgba") colorvalue = GL_RGB;
+					if(commands[3] == "RGB" || commands[3] == "rgb") colorvalue = GL_RGB;
 				}
 				try {
 					TextureManager::instance()->loadTexture(i,GL_CLAMP_TO_EDGE,GL_CLAMP_TO_EDGE,colorvalue);
