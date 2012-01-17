@@ -51,7 +51,6 @@ void Controller::run()
 		last_step = SDL_GetTicks();
 
 		renderer.startDraw();
-		TextFactory::instance()->drawText("ekekekekekekasadfsfaffrghhjfbcvbsds",100,100);
 		renderer.drawFrame();
 		view.draw();
 		terminal.draw();
@@ -71,7 +70,6 @@ void Controller::onEvent(const SDL_Event &event)
 		switch (event.key.keysym.sym) {
 
 		case SDLK_ESCAPE:
-			running = false;
 			break;
 
 		default:
@@ -94,6 +92,7 @@ std::string Controller::onCommit(std::string line) {
 	std::vector<std::string> commands = TextFactory::instance()->util()->split(line,' ');
 	if(commands[0] == "exit") {
 		terminal.close();
+		running = false;
 	} else if(commands[0] == "add") {
 		return add(commands);
 	} else if(commands[0] == "list") {

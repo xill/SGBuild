@@ -87,3 +87,14 @@ std::string TextureManager::idToPath(int id) {
 	}
 	return (isValidMap(index))?texture_map[index]:"none";
 }
+
+int TextureManager::pathToId(std::string path) {
+	int index = -1;
+	for(int i = 0; i < texture_map.size(); ++i) {
+		if(texture_map[i] == path) {
+			index = i;
+			break;
+		}
+	}
+	return (isValidTexture(index))?textures[index]:-1;
+}

@@ -57,7 +57,13 @@ Element* SLManager::loadHelper(std::ifstream &myfile, Element* elem, std::string
 					}
 				}
 			} else if(sublines[0] == "path") {
+				/* currently preset for rgba images ONLY. rgb will result in a crash. */
 				current->setName(sublines[1]);
+				if(sublines[1] != "none") {
+					TextureManager::instance()->mapTexture(sublines[1]);
+					TextureManager::instance()->loadTexture(TextureManager::instance()->getMapped().size()-1, GL_CLAMP_TO_EDGE,GL_CLAMP_TO_EDGE,GL_RGBA);
+					current->setTexture(TextureManager::instance()->pathToId(sublines[1]));
+				}
 			} else if(sublines[0] == "t") {
 				std::vector<std::string> params = TextFactory::instance()->util()->split(sublines[1],',');
 				current->setLocation(Vec2f(f_scast(params[0]),f_scast(params[1])));

@@ -32,6 +32,7 @@ public:
 	std::vector<std::string> getMapped() { return texture_map; }
 
 	std::string idToPath(int id);
+	int pathToId(std::string);
 
 private:
 	TextureManager();
