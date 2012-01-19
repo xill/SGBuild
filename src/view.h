@@ -31,10 +31,16 @@ public:
 
 	/* return given index from the viewlist. Will throw if the key is invalid. */
 	Element* get(int index);
+
+	void setVirtualOrigin(const Vec2f loc);
+	Vec2f getVirtualOrigin();
 private:
 	/* current active element. */
 	Element* current;
 	
+	/* virtual origin which will adjust locations during saving. */
+	Vec2f virtual_origin;
+
 	std::vector<Element*> viewlist;
 
 	

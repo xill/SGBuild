@@ -96,13 +96,13 @@ void SLManager::save(View* view,std::string path)
 		std::vector<Element*> elements = view->getAll();
 
 		for(int i = 0; i < elements.size(); ++i) {
-			saveHelper(newfile,elements[i]);
+			saveHelper(newfile,view,elements[i]);
 		}
 		newfile.close();
 	}
 }
 
-void SLManager::saveHelper(std::ofstream &filestream, Element* elem)
+void SLManager::saveHelper(std::ofstream &filestream, View* view,  Element* elem)
 {
 	if(elem->type() == "animationframe")
 	{
@@ -111,7 +111,8 @@ void SLManager::saveHelper(std::ofstream &filestream, Element* elem)
 
 		filestream << "<Element type="+elem->type()+" ";
 		filestream << "path="+TextureManager::instance()->idToPath(frame->getTexture())+" ";
-		filestream << "t="+s_cast(elem->getLocation().x)+","+s_cast(elem->getLocation().y)+" ";
+		filestream << "t="+s_cast(elem->getLocation().x-view->getVirtualOrigin().x);
+		filestream << ","+s_cast(elem->getLocation().y-view->getVirtualOrigin().y)+" ";
 		filestream << "s="+s_cast(elem->getScale().x)+","+s_cast(elem->getScale().y)+" ";
 		filestream << "a="+s_cast(elem->getAngle())+" ";
 		filestream << "d="+s_cast(frame->getDuration())+" >\n";
@@ -119,7 +120,7 @@ void SLManager::saveHelper(std::ofstream &filestream, Element* elem)
 		if(list.size() > 0) {
 			for(int i = 0; i < list.size() ; ++i) {
 				AnimationFrame* subframe = list[i];
-				if(subframe != 0) saveHelper(filestream,subframe);
+				if(subframe != 0) saveHelper(filestream,view,subframe);
 			}
 		}
 		filestream << "</Element>\n";
@@ -128,7 +129,8 @@ void SLManager::saveHelper(std::ofstream &filestream, Element* elem)
 		std::vector<AnimationFrame*> list = frame->get();
 
 		filestream << "<Element type="+elem->type()+" ";
-		filestream << "t="+s_cast(elem->getLocation().x)+","+s_cast(elem->getLocation().y)+" ";
+		filestream << "t="+s_cast(elem->getLocation().x-view->getVirtualOrigin().x);
+		filestream << ","+s_cast(elem->getLocation().y-view->getVirtualOrigin().y)+" ";
 		filestream << "s="+s_cast(elem->getScale().x)+","+s_cast(elem->getScale().y)+" ";
 		filestream << "a="+s_cast(elem->getAngle())+" ";
 		filestream << ">\n";
@@ -136,14 +138,15 @@ void SLManager::saveHelper(std::ofstream &filestream, Element* elem)
 		if(list.size() > 0) {
 			for(int i = 0; i < list.size() ; ++i) {
 				AnimationFrame* subframe = list[i];
-				if(subframe != 0) saveHelper(filestream,subframe);
+				if(subframe != 0) saveHelper(filestream,view,subframe);
 			}
 		}
 		filestream << "</Element>\n";
 	} else if(elem->type() == "image") {
 		filestream << "<Element type="+elem->type()+" ";
 		filestream << "path="+TextureManager::instance()->idToPath(elem->getTexture())+" ";
-		filestream << "t="+s_cast(elem->getLocation().x)+","+s_cast(elem->getLocation().y)+" ";
+		filestream << "t="+s_cast(elem->getLocation().x-view->getVirtualOrigin().x);
+		filestream << ","+s_cast(elem->getLocation().y-view->getVirtualOrigin().y)+" ";
 		filestream << "s="+s_cast(elem->getScale().x)+","+s_cast(elem->getScale().y)+" ";
 		filestream << "a="+s_cast(elem->getAngle())+" ";
 		filestream << ">\n";

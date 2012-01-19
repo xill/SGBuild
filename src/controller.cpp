@@ -244,8 +244,19 @@ std::string Controller::set(std::vector<std::string> commands)
 
 			elem->setPivot(Vec2f(x,y));
 			return "";
-		}
+		} else if(commands[1] == "-origin") {
+			float x = 0,y = 0;
 
+			/* cast and check for parameter validity. */
+			try {
+				x = f_scast(commands[2]);
+				y = f_scast(commands[3]);
+			} catch ( ... ) {
+				return "invalid parameters.";
+			}
+
+			view.setVirtualOrigin(Vec2f(x,y));
+		}
 	} else if(commands.size() == 3 && commands[1] != "-active") {
 		if(view.getSet() != 0) {
 

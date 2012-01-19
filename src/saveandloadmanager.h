@@ -43,7 +43,7 @@ private:
 	static SLManager* m_instance;
 
 	Element* loadHelper(std::ifstream &myfile, Element* elem, std::string newline = "");
-	void saveHelper(std::ofstream &filestream, Element* elem);
+	void saveHelper(std::ofstream &filestream, View* view, Element* elem);
 };
 
 #endif

@@ -46,3 +46,13 @@ Element* View::get(int index)
 		throw int();
 	}
 }
+
+void View::setVirtualOrigin(const Vec2f loc)
+{
+	this->virtual_origin = loc;
+}
+
+Vec2f View::getVirtualOrigin()
+{
+	return virtual_origin;
+}
