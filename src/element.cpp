@@ -6,6 +6,7 @@ Element::Element(std::string _typename)
 	, layer(0)
 	, m_typename(_typename)
 	, texture(0)
+	, angle(0)
 	, R(1)
 	, G(1)
 	, B(1)
@@ -26,6 +27,7 @@ Element::Element(Vec2f loc, Vec2f _scale, std::string _typename)
 	, scale(_scale)
 	, m_typename(_typename)
 	, texture(0)
+	, angle(0)
 	, R(1)
 	, G(1)
 	, B(1)
@@ -43,4 +45,12 @@ void Element::setRGBA(float r, float g, float b, float a) {
 	this->G = g;
 	this->B = b;
 	this->A = a;
+}
+
+void Element::pivotalRotate() {
+	if(angle != 0) {
+		glTranslatef(-pivot.x,-pivot.y,0);
+		glRotatef(angle,0,0,1);
+		glTranslatef(pivot.x,pivot.y,0);
+	}
 }

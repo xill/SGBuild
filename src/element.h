@@ -28,6 +28,12 @@ public :
 	Vec2f getScale() { return scale; }
 	void setScale(const Vec2f _scale) { this->scale = _scale; }
 
+	Vec2f getPivot() { return pivot; }
+	void setPivot(const Vec2f _pivot) { this->pivot = _pivot; }
+
+	float getAngle() { return angle; }
+	void setAngle(float _angle) { this->angle = _angle; }
+
 	Vec2f* dimensionPoints() { return points; }
 
 	std::string type() { return m_typename; }
@@ -50,16 +56,23 @@ public :
 
 	/* sets RGBA values when drawing this object. */
 	void setRGBA(float r, float g, float b, float a);
+	void pivotalRotate();
 
 protected:
+	/* actual xy location of this image. top left corner. */
 	Vec2f location;
+	/* pivot point which this element rotates around. */
+	Vec2f pivot;
+	/* xy scale factor of this image. */
 	Vec2f scale;
-
 	/* all corner points are relative to location point. */
 	Vec2f *points;
 
+	float angle;
 	bool visible;
 	bool changed;
+
+	/* todo. something with layers. */
 	int layer;
 
 	float R,G,B,A;

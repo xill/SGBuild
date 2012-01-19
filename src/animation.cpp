@@ -6,6 +6,7 @@ void Animation::draw()
 
 	glPushMatrix();
 	glTranslatef(location.x, location.y, 0);
+	pivotalRotate();
 	glScalef(scale.x,scale.y,1);
 
 	if(running) {

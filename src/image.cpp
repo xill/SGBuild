@@ -5,6 +5,7 @@ void Image::draw()
 	if(visible) {
 		glPushMatrix();
 		glTranslatef(location.x,location.y,0);
+		pivotalRotate();
 		glScalef(scale.x,scale.y,1);
 		glColor4f(R,G,B,A);
 

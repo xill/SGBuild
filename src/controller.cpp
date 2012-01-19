@@ -227,11 +227,39 @@ std::string Controller::set(std::vector<std::string> commands)
 			elem->setScale(Vec2f(x,y));
 
 			return "";
+		} else if(commands[1] == "-pivot") {
+			Element* elem = view.getSet();
+			if(elem == 0) {
+				return "set element is invalid.";
+			}
+			float x = 0,y = 0;
+
+			/* cast and check for parameter validity. */
+			try {
+				x = f_scast(commands[2]);
+				y = f_scast(commands[3]);
+			} catch ( ... ) {
+				return "invalid parameters.";
+			}
+
+			elem->setPivot(Vec2f(x,y));
+			return "";
 		}
 
 	} else if(commands.size() == 3 && commands[1] != "-active") {
 		if(view.getSet() != 0) {
-			if(view.getSet()->type() == ANIMATION) {
+
+			if(commands[1] == "-angle") {
+				float a = 0;
+				try {
+					a = f_scast(commands[2]);
+				} catch (...) {
+					return "invalid parameter.";
+				}
+				
+				view.getSet()->setAngle(a);
+				return "";
+			}else if(view.getSet()->type() == ANIMATION) {
 				Animation* anim = (Animation*) view.getSet();
 				bool state = false;
 
