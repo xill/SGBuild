@@ -72,6 +72,8 @@ Element* SLManager::loadHelper(std::ifstream &myfile, Element* elem, std::string
 				current->setScale(Vec2f(f_scast(params[0]),f_scast(params[1])));
 			} else if(sublines[0] == "d") {
 				((AnimationFrame*)current)->setDuration(i_scast(sublines[1]));
+			} else if(sublines[0] == "a") {
+				current->setAngle(i_scast(sublines[1]));
 			}
 		}
 	}
@@ -111,6 +113,7 @@ void SLManager::saveHelper(std::ofstream &filestream, Element* elem)
 		filestream << "path="+TextureManager::instance()->idToPath(frame->getTexture())+" ";
 		filestream << "t="+s_cast(elem->getLocation().x)+","+s_cast(elem->getLocation().y)+" ";
 		filestream << "s="+s_cast(elem->getScale().x)+","+s_cast(elem->getScale().y)+" ";
+		filestream << "a="+s_cast(elem->getAngle())+" ";
 		filestream << "d="+s_cast(frame->getDuration())+" >\n";
 
 		if(list.size() > 0) {
@@ -127,6 +130,7 @@ void SLManager::saveHelper(std::ofstream &filestream, Element* elem)
 		filestream << "<Element type="+elem->type()+" ";
 		filestream << "t="+s_cast(elem->getLocation().x)+","+s_cast(elem->getLocation().y)+" ";
 		filestream << "s="+s_cast(elem->getScale().x)+","+s_cast(elem->getScale().y)+" ";
+		filestream << "a="+s_cast(elem->getAngle())+" ";
 		filestream << ">\n";
 
 		if(list.size() > 0) {
@@ -141,6 +145,7 @@ void SLManager::saveHelper(std::ofstream &filestream, Element* elem)
 		filestream << "path="+TextureManager::instance()->idToPath(elem->getTexture())+" ";
 		filestream << "t="+s_cast(elem->getLocation().x)+","+s_cast(elem->getLocation().y)+" ";
 		filestream << "s="+s_cast(elem->getScale().x)+","+s_cast(elem->getScale().y)+" ";
+		filestream << "a="+s_cast(elem->getAngle())+" ";
 		filestream << ">\n";
 		filestream << "</Element>\n";
 	}
