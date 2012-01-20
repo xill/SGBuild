@@ -256,6 +256,19 @@ std::string Controller::set(std::vector<std::string> commands)
 			}
 
 			view.setVirtualOrigin(Vec2f(x,y));
+		} else if(commands[1] == "-screensize") {
+			float x = 0,y = 0;
+
+			/* cast and check for parameter validity. */
+			try {
+				x = f_scast(commands[2]);
+				y = f_scast(commands[3]);
+			} catch ( ... ) {
+				return "invalid parameters.";
+			}
+
+			renderer.initWindow(Vec2f(x,y),32,0,title_);
+			return "";
 		}
 	} else if(commands.size() == 3 && commands[1] != "-active") {
 		if(view.getSet() != 0) {
@@ -349,6 +362,10 @@ std::string Controller::set(std::vector<std::string> commands)
 			terminal.push("-loop");
 			terminal.push("-duration");
 			terminal.push("-texture");
+			terminal.push("-angle");
+			terminal.push("-pivot");
+			terminal.push("-origin");
+			terminal.push("-screensize");
 			return "";
 	} else if(commands.size() == 1 || commands.size() == 2) {
 		terminal.push("too few parameters.");
